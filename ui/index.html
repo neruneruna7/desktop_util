@@ -4,8 +4,51 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+
+    <style>
+        body {
+            background-color: #333333;
+            color: white;
+        }
+        #text-input {
+            width: 90vw;
+            height: 50vh;
+            margin: auto;
+            font-size: 1.2em; /* フォントサイズを1.2emに設定 */
+            background-color: #888888;
+        }
+        li {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+
   </head>
   <body>
-    <h1>Welcome from Tauri!</h1>
+    <h1 id="header">文字数カウンタ</h1>
+    <div>
+        <!-- 文字数を表示する -->
+        <ul>
+            <li>文字数: <p id="total_chars">0</p></li>
+            <li>改行を含む文字数: <p id="without_newlines">0</p></li>
+            <li>空白を含む文字数: <p id="without_newlines_spaces">0</p></li>
+        </ul>
+    </div>
+    <textarea id="text-input"></textarea>
+
+
+    <script>
+        const { invoke } = window.__TAURI__.tauri
+
+        document.getElementById('text-input').addEventListener('input', function(e) {
+          var text = e.target.value;
+            invoke('count_characters', { text: text }).then(function(response) {
+                console.log(response);
+                document.getElementById('total_chars').innerText = response.total_chars;
+                document.getElementById('without_newlines').innerText = response.without_newlines;
+                document.getElementById('without_newlines_spaces').innerText = response.without_newlines_spaces;
+            });
+        });
+      </script>
   </body>
 </html>
